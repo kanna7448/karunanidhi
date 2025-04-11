@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: survey-backend
+    env: python
+    plan: free
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: >
+      bash -c "
+        python backend/manage.py migrate &&
+        python backend/manage.py collectstatic --noinput &&
+        gunicorn core.wsgi:application --chdir backend
+      "
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings
+      - key: PYTHON_VERSION
+        value: 3.11
+    # Optionally, add database settings or other environment variables here
